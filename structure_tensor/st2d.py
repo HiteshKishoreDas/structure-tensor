@@ -5,7 +5,7 @@ import numpy as np
 from scipy import ndimage
 
 
-def structure_tensor_2d(image, sigma, rho, out=None, truncate=4.0):
+def structure_tensor_2d(image, sigma, rho, mode='nearest', out=None, truncate=4.0):
     """Structure tensor for 2D image data.
 
     Arguments:
@@ -38,8 +38,8 @@ def structure_tensor_2d(image, sigma, rho, out=None, truncate=4.0):
         logging.warning('image is not floating type array. This may result in a loss of precision and unexpected behavior.') 
 
     # Compute derivatives (Scipy implementation truncates filter at 4 sigma).
-    Ix = ndimage.gaussian_filter(image, sigma, order=[1, 0], mode='nearest', truncate=truncate)
-    Iy = ndimage.gaussian_filter(image, sigma, order=[0, 1], mode='nearest', truncate=truncate)
+    Ix = ndimage.gaussian_filter(image, sigma, order=[1, 0], mode=mode, truncate=truncate)
+    Iy = ndimage.gaussian_filter(image, sigma, order=[0, 1], mode=mode, truncate=truncate)
 
     if out is None:
         # Allocate S.
@@ -51,11 +51,11 @@ def structure_tensor_2d(image, sigma, rho, out=None, truncate=4.0):
     # Integrate elements of structure tensor (Scipy uses sequence of 1D).
     tmp = np.empty(image.shape, dtype=image.dtype)
     np.multiply(Ix, Ix, out=tmp)
-    ndimage.gaussian_filter(tmp, rho, mode='nearest', output=S[0], truncate=truncate)
+    ndimage.gaussian_filter(tmp, rho, mode=mode, output=S[0], truncate=truncate)
     np.multiply(Iy, Iy, out=tmp)
-    ndimage.gaussian_filter(tmp, rho, mode='nearest', output=S[1], truncate=truncate)
+    ndimage.gaussian_filter(tmp, rho, mode=mode, output=S[1], truncate=truncate)
     np.multiply(Ix, Iy, out=tmp)
-    ndimage.gaussian_filter(tmp, rho, mode='nearest', output=S[2], truncate=truncate)
+    ndimage.gaussian_filter(tmp, rho, mode=mode, output=S[2], truncate=truncate)
 
     return S
 

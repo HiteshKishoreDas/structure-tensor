@@ -33,6 +33,7 @@ def parallel_structure_tensor_analysis(
     include_all_eigenvalues=False,
     devices=None,
     progress_callback_fn=None,
+    mode='nearest'
 ):
 
     # Check that at least one output is specified.
@@ -212,6 +213,7 @@ def parallel_structure_tensor_analysis(
         } if eigenvalues else None,
         'rho': rho,
         'sigma': sigma,
+        'mode': mode,
         'block_size': block_size,
         'truncate': truncate,
         'include_all_eigenvalues': include_all_eigenvalues,
@@ -332,6 +334,7 @@ def do_work(block_id):
         block,
         sigma=params.sigma,
         rho=params.rho,
+        mode=params.mode,
         truncate=params.truncate,
     )
 
